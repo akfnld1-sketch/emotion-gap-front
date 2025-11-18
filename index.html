@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>감정의 틈 · Emotion Gap</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, Helvetica, Arial, sans-serif;
+      background: radial-gradient(circle at top, #0f172a 0, #020617 55%, #000 100%);
+      color: #e5e7eb;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 24px;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 1200px;
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      backdrop-filter: blur(16px);
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .logo-area {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .logo-title {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #e5e7eb;
+    }
+
+    .logo-sub {
+      font-size: 13px;
+      color: #9ca3af;
+    }
+
+    .pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      font-size: 11px;
+      color: #cbd5f5;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pill-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 12px #22c55e;
+    }
+
+    .header-right {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: flex-end;
+      min-width: 260px;
+    }
+
+    .tabs {
+      display: inline-flex;
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 999px;
+      padding: 4px;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      gap: 4px;
+    }
+
+    .tab-btn {
+      border: none;
+      background: transparent;
+      color: #9ca3af;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.16s ease;
+      white-space: nowrap;
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, #0ea5e9, #6366f1);
+      color: #f9fafb;
+      box-shadow: 0 10px 25px rgba(56, 189, 248, 0.35);
+    }
+
+    .lang-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 12px;
+    }
+
+    .lang-field label {
+      color: #cbd5f5;
+    }
+
+    .lang-field select {
+      width: 220px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
+      padding: 6px 10px;
+      font-size: 12px;
+      outline: none;
+    }
+
+    .lang-field select:focus {
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.5);
+    }
+
+    main {
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .note {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-bottom: 8px;
+    }
+
+    .generator {
+      display: none;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
+      gap: 20px;
+      margin-top: 8px;
+    }
+
+    .generator.active {
+      display: grid;
+    }
+
+    .panel {
+      background: linear-gradient(
+        145deg,
+        rgba(15, 23, 42, 0.95),
+        rgba(15, 23, 42, 0.75)
+      );
+      border-radius: 14px;
+      padding: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 250px;
+    }
+
+    .panel-title {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 13px;
+    }
+
+    .field label {
+      color: #cbd5f5;
+      font-size: 12px;
+    }
+
+    textarea,
+    select,
+    input[type="text"] {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
+      padding: 8px 10px;
+      font-size: 13px;
+      resize: vertical;
+      outline: none;
+    }
+
+    textarea:focus,
+    select:focus,
+    input[type="text"]:focus {
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.5);
+    }
+
+    .btn-primary,
+    .titles-reset-btn,
+    .titles-generate-btn {
+      border-radius: 999px;
+      border: none;
+      font-size: 12px;
+      padding: 7px 14px;
+      cursor: pointer;
+      background: linear-gradient(135deg, #0ea5e9, #6366f1);
+      color: #f9fafb;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 10px 24px rgba(37, 99, 235, 0.4);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+    }
+
+    .btn-primary:disabled,
+    .titles-generate-btn:disabled {
+      opacity: 0.5;
+      cursor: default;
+      box-shadow: none;
+    }
+
+    .btn-primary:hover,
+    .titles-reset-btn:hover,
+    .titles-generate-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 30px rgba(37, 99, 235, 0.5);
+      opacity: 0.95;
+    }
+
+    .titles-reset-btn {
+      padding: 5px 12px;
+      font-size: 11px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      box-shadow: none;
+    }
+
+    .titles-list {
+      margin-top: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      min-height: 40px;
+      font-size: 12px;
+    }
+
+    .title-item-btn {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
+      padding: 6px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.14s ease;
+      max-width: 100%;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .title-item-btn:hover {
+      border-color: #38bdf8;
+      background: rgba(30, 64, 175, 0.9);
+    }
+
+    .title-item-btn.selected {
+      background: rgba(30, 64, 175, 0.4);
+      border-color: rgba(96, 165, 250, 0.8);
+    }
+
+    .subtitle {
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    /* 복사 버튼 */
+    .copy-btn {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
+      font-size: 11px;
+      padding: 4px 10px;
+      cursor: pointer;
+      transition: all 0.12s ease;
+      white-space: nowrap;
+    }
+
+    .copy-btn:hover {
+      background: rgba(30, 64, 175, 0.9);
+      border-color: #38bdf8;
+    }
+
+    /* Suno 버튼 */
+    .suno-btn {
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #0ea5e9, #6366f1);
+      color: #f9fafb;
+      font-size: 13px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 10px 24px rgba(37, 99, 235, 0.4);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+      white-space: nowrap;
+    }
+
+    .suno-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 30px rgba(37, 99, 235, 0.6);
+      opacity: 0.96;
+    }
+
+    @media (max-width: 900px) {
+      .app-container {
+        padding: 18px;
+      }
+      .generator {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <header>
+      <div class="logo-area">
+        <span class="logo-title" data-i18n="logoTitle">Emotion Gap · 감정의 틈</span>
+        <span class="logo-sub" data-i18n="logoSub">
+          감정 한 줄로 제목 · 가사 · 프롬프트 자동 생성 (8개국 언어)
+        </span>
+        <div class="pill">
+          <span class="pill-dot"></span>
+          <span data-i18n="pillStatus">LIVE · BETA</span>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="tabs">
+          <button class="tab-btn active" data-target="page1" data-i18n="tabPage1">
+            페이지 1 (단일곡)
+          </button>
+          <button class="tab-btn" data-target="page2" data-i18n="tabPage2">
+            페이지 2 (시리즈용 단일곡)
+          </button>
+        </div>
+        <div class="lang-field">
+          <label for="languageSelect" data-i18n="langLabel">
+            언어 / Language (가사·프롬프트 언어)
+          </label>
+          <select id="languageSelect"></select>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <p class="note" id="statusText" data-i18n="statusInit">
+        1페이지: 감정 → 제목 10개 → 가사/프롬프트 · 2페이지: 시리즈용 제목 10개 → 1곡 가사/프롬프트. 선택한 언어로 모두 생성됩니다.
+      </p>
+
+      <!-- ▼▼▼ 1페이지: 단일곡 생성 ▼▼▼ -->
+      <section class="generator active" data-page="page1">
+        <!-- 왼쪽 패널 -->
+        <div class="panel">
+          <div class="panel-title" data-i18n="page1PanelTitle">
+            1페이지 · 감정 입력 & 제목 추천
+          </div>
+
+          <div class="field">
+            <label data-i18n="labelEmotion1">감정/상황 한 줄 입력</label>
+            <textarea
+              class="user-text"
+              rows="3"
+              data-i18n-placeholder="placeholderEmotion1"
+              placeholder="예: 겨울밤 강가에서 마지막 인사를 하던 장면..."
+            ></textarea>
+          </div>
+
+          <div class="field">
+            <label data-i18n="labelStyle1">장르 / 스타일 선택</label>
+            <select class="style-select">
+              <!-- 메인/틈새/트롯/전통악기: 현우님 기존 리스트 그대로 -->
+              <option disabled>── 메인 시장 (Main Market) ──</option>
+              <!-- Future Bass 3종 -->
+              <option value="futureBassBright">Future Bass (Bright) — 퓨처베이스 밝은 분위기</option>
+              <option value="futureBassFast">Future Bass (Fast) — 퓨처베이스 빠른 템포</option>
+              <option value="futureBassCozy">Future Bass (Cozy/Slow) — 퓨처베이스 느리고 감성적</option>
+
+              <!-- EDM / House -->
+              <option value="edmFestival">EDM Festival — 페스티벌 EDM</option>
+              <option value="edmMelodic">Melodic EDM — 멜로딕 EDM</option>
+              <option value="houseGroove">House Groove — 하우스 그루브</option>
+              <option value="deepHouseWarm">Deep House (Warm) — 따뜻한 딥하우스</option>
+              <option value="deepHouseChill">Deep House (Chill) — 차분한 딥하우스</option>
+              <option value="futureHouse">Future House — 퓨처 하우스</option>
+              <option value="chillEDM">Chill EDM — 칠 EDM</option>
+
+              <!-- K-POP / Pop -->
+              <option value="kpopDance">K-pop Dance — 케이팝 댄스</option>
+              <option value="kpopBalladModern">K-pop Ballad (Modern) — 모던 K발라드</option>
+              <option value="popBright">Bright Pop — 밝은 팝</option>
+              <option value="popAcoustic">Acoustic Pop — 어쿠스틱 팝</option>
+              <option value="indiePop">Indie Pop — 인디 팝</option>
+              <option value="latinPop">Latin Pop — 라틴 팝</option>
+              <option value="afrobeat">Afrobeat — 아프로비트</option>
+
+              <!-- Ballad / R&B -->
+              <option value="acousticBallad">Acoustic Ballad — 어쿠스틱 발라드</option>
+              <option value="pianoBalladSoft">Soft Piano Ballad — 피아노 발라드</option>
+              <option value="rnbWarm">R&B Warm — 따뜻한 R&B</option>
+              <option value="rnbNight">R&B Night Mood — 밤 감성 R&B</option>
+
+              <!-- Hip-hop -->
+              <option value="trapHipHop">Trap Hip-hop — 트랩 힙합</option>
+              <option value="boomBap">Boom Bap — 붐뱁 힙합</option>
+
+              <!-- 로파이 / 수면 / 분위기 -->
+              <option value="lofiStudy">Lo-fi Study Beats — 공부 로파이</option>
+              <option value="lofiRainy">Lo-fi Rainy Mood — 비 오는 로파이</option>
+              <option value="sleepLofi">Sleep Lo-fi — 수면 로파이</option>
+              <option value="ambient">Ambient Pad — 앰비언트</option>
+              <option value="sleepAmbient">Sleep Ambient — 수면 앰비언트</option>
+              <option value="pianoSolo">Piano Solo — 피아노 솔로</option>
+              <option value="healingPiano">Healing Piano — 힐링 피아노</option>
+
+              <!-- 레트로 / 기타 -->
+              <option value="retroSynthwave">Retro Synthwave — 레트로 신스웨이브</option>
+              <option value="cityPop">City Pop — 시티팝</option>
+              <option value="gameBGM">Game BGM — 게임 브금</option>
+
+              <!-- 트롯(메인) -->
+              <option disabled>── 트롯 (Main) ──</option>
+              <option value="trotTraditional">Traditional Trot — 정통 트롯</option>
+              <option value="trotSemi">Semi Trot — 세미 트롯</option>
+              <option value="trotBallad">Ballad Trot — 발라드 트롯</option>
+              <option value="trotDance">Dance Trot — 댄스 트롯</option>
+              <option value="trotHighEnergy">High-Energy Trot — 하이텐션 트롯</option>
+              <option value="trotKFusion">K-Fusion Trot — K-트롯 퓨전</option>
+
+              <!-- 전통악기(메인) -->
+              <option disabled>── 한국 전통악기 (Main) ──</option>
+              <option value="gayageumFusion">Gayageum Fusion — 가야금 퓨전</option>
+              <option value="daegeumFusion">Daegeum Fusion — 대금 퓨전</option>
+              <option value="jangguBeat">Janggu Beat — 장구 비트</option>
+              <option value="haegeumBallad">Haegeum Ballad — 해금 발라드</option>
+              <option value="gukakEDM">Gukak EDM — 국악 EDM</option>
+
+              <!-- 틈새 시장 -->
+              <option disabled>── 틈새 시장 (Niche Market) ──</option>
+              <option value="midnightLofi">Midnight Lo-fi — 새벽 감성 로파이</option>
+              <option value="nightDriveSynth">Night Drive Synthwave — 야간 드라이브 신스</option>
+              <option value="studyLofi">Study Lo-fi — 집중 로파이</option>
+              <option value="workBGM">Work BGM — 일하면서 들을 BGM</option>
+              <option value="meditationAmbient">Meditation Ambient — 명상 앰비언트</option>
+              <option value="alphaWave">Alpha Wave — 초집중 알파파</option>
+              <option value="cafeIndie">Cafe Indie — 카페 인디</option>
+              <option value="rainLofi">Rainy Lo-fi — 비 감성 로파이</option>
+              <option value="travelStream">Travel Stream BGM — 여행 브금</option>
+              <option value="healingMind">Healing Mind — 심리 치유 음악</option>
+              <option value="powerTrap">Power Trap — 헬스 파워 트랩</option>
+              <option value="streetHipHop">Street Hip-hop — 스트리트 힙합</option>
+              <option value="seniorRemix">Senior Ballad Remix — 시니어 발라드 리믹스</option>
+              <option value="petHealing">Pet Healing Music — 반려동물 힐링</option>
+              <option value="kidsRemix">Kids Remix — 키즈 리믹스</option>
+              <option value="asmrMix">ASMR + BGM — ASMR 믹스</option>
+              <option value="winterMood">Winter Mood — 겨울 감성</option>
+              <option value="christmasJazz">Christmas Jazz — 크리스마스 재즈</option>
+              <option value="cinematicTrailer">Cinematic Trailer — 영화 예고편 스타일</option>
+              <option value="minimalTechno">Minimal Techno — 미니멀 테크노</option>
+              <option value="liquidDnb">Liquid DnB — 리퀴드 드럼앤베이스</option>
+              <option value="classicalPiano">Classical Piano Mix — 클래식 피아노 믹스</option>
+              <option value="loungeChill">Lounge Chill — 라운지 칠</option>
+              <option value="vaporwave">Vaporwave — 베이퍼웨이브</option>
+              <option value="dreamPop">Dream Pop — 드림 팝</option>
+              <option value="soulFunk">Soul Funk — 소울 펑크</option>
+              <option value="cyberpunkEDM">Cyberpunk EDM — 사이버펑크 EDM</option>
+              <option value="vrMetaverse">VR/Metaverse BGM — 메타버스 음악</option>
+              <option value="photoBGM">Photo/Instagram Mood — 인스타 감성 브금</option>
+              <option value="weddingBallad">Wedding Ballad — 웨딩 발라드</option>
+              <option value="spaHealing">Spa Healing Music — 스파 힐링 음악</option>
+
+              <!-- 트롯 틈새 -->
+              <option disabled>── 트롯 (Niche) ──</option>
+              <option value="trotLofi">Lo-fi Trot — 로파이 트롯</option>
+              <option value="trotEDM">EDM Trot — EDM 트롯</option>
+              <option value="trotHealing">Healing Trot — 힐링 트롯</option>
+              <option value="trotSeasonal">Seasonal Trot — 계절 트롯</option>
+
+              <!-- 전통악기 틈새 -->
+              <option disabled>── 전통악기 (Niche) ──</option>
+              <option value="sansoLofi">Sanjo Lo-fi — 산조 로파이</option>
+              <option value="gukakMeditation">Gukak Meditation — 국악 명상</option>
+              <option value="samulModern">Samulnori Modern — 사물놀이 모던</option>
+              <option value="pungmulEDM">Pungmul EDM — 풍물 EDM</option>
+              <option value="koreanSeasonal">Seasonal Gukak — 설날/추석 국악 테마</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label data-i18n="labelTheme1">시리즈 / 테마 선택</label>
+            <select class="theme-select">
+              <option value="auto" data-i18n="optThemeAuto">자동 (문장 기반)</option>
+              <option value="love" data-i18n="optThemeLove">사랑</option>
+              <option value="breakup" data-i18n="optThemeBreakup">이별</option>
+              <option value="winter" data-i18n="optThemeWinter">겨울</option>
+              <option value="workout" data-i18n="optThemeWorkout">헬스/운동</option>
+              <option value="work" data-i18n="optThemeWork">일하면서</option>
+              <option value="study" data-i18n="optThemeStudy">공부</option>
+              <option value="sleep" data-i18n="optThemeSleep">취침/수면</option>
+              <option value="christmas" data-i18n="optThemeChristmas">크리스마스</option>
+              <option value="seollal" data-i18n="optThemeSeollal">설날</option>
+              <option value="rain" data-i18n="optThemeRain">비/장마</option>
+              <option value="nightdrive" data-i18n="optThemeNightdrive">야간 드라이브</option>
+              <option value="cafe" data-i18n="optThemeCafe">카페</option>
+              <option value="travel" data-i18n="optThemeTravel">여행</option>
+              <option value="loneliness" data-i18n="optThemeLoneliness">외로움</option>
+              <option value="hope" data-i18n="optThemeHope">희망/재도전</option>
+              <option value="nostalgia" data-i18n="optThemeNostalgia">추억/회상</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label data-i18n="labelLength1">곡 길이 선택</label>
+            <select class="length-select">
+              <option value="2" data-i18n="optLength2">약 2분</option>
+              <option value="3" selected data-i18n="optLength3">약 3분</option>
+              <option value="4" data-i18n="optLength4">약 4분</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <label data-i18n="labelTitleList">추천 제목 10개</label>
+              <button type="button" class="titles-reset-btn" data-i18n="btnTitlesReset">
+                리셋
+              </button>
+            </div>
+            <button
+              type="button"
+              class="titles-generate-btn btn-primary"
+              data-i18n="btnTitlesGenerate"
+            >
+              제목 추천받기
+            </button>
+            <div class="titles-list"></div>
+          </div>
+
+          <div class="field">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <label data-i18n="labelSelectedTitle">선택한 제목</label>
+              <button type="button" class="copy-btn" data-copy-target="page1-selected-title">
+                복사하기
+              </button>
+            </div>
+            <input
+              type="text"
+              class="selected-title"
+              id="page1-selected-title"
+              readonly
+            />
+          </div>
+        </div>
+
+        <!-- 오른쪽: 가사 & 프롬프트 -->
+        <div class="panel">
+          <div class="panel-title" data-i18n="page1ResultTitle">
+            1페이지 · 가사 & 프롬프트 결과
+          </div>
+
+          <div class="field">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <label data-i18n="labelLyrics1">가사 (자동 생성)</label>
+              <button type="button" class="copy-btn" data-copy-target="page1-lyrics">
+                복사하기
+              </button>
+            </div>
+            <textarea
+              class="lyrics-output"
+              id="page1-lyrics"
+              rows="12"
+              data-i18n-placeholder="placeholderLyrics1"
+              placeholder="제목을 선택하면 이곳에 Verse/Chorus 구조로 가사가 생성됩니다."
+            ></textarea>
+          </div>
+
+          <div class="field">
+            <label data-i18n="labelLongPrompt1">긴 프롬프트 (유튜브 인기 스타일 기반)</label>
+            <textarea
+              class="long-prompt-output"
+              rows="6"
+              data-i18n-placeholder="placeholderLong1"
+              placeholder="제목 & 가사 & 테마를 기반으로, 유튜브 음악 채널 상위 스타일을 참고한 긴 프롬프트가 생성됩니다."
+            ></textarea>
+          </div>
+
+          <div class="field">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <label data-i18n="labelShortPrompt1">짧은 프롬프트 (Suno 전용, 압축형)</label>
+              <button type="button" class="copy-btn" data-copy-target="page1-short">
+                복사하기
+              </button>
+            </div>
+            <textarea
+              class="short-prompt-output"
+              id="page1-short"
+              rows="3"
+              data-i18n-placeholder="placeholderShort1"
+              placeholder="위 긴 프롬프트를 압축한 Suno용 짧은 프롬프트가 생성됩니다. (~2/3/4분 정보 포함)"
+            ></textarea>
+          </div>
+
+          <!-- 1페이지 Suno 바로가기 버튼 -->
+          <div style="margin-top: 4px; display:flex; justify-content:flex-end;">
+            <a
+              href="https://app.suno.ai/create"
+              target="_blank"
+              class="suno-btn"
+            >
+              Suno에서 바로 만들기 →
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ▼▼▼ 2페이지: 시리즈용 단일곡 생성 ▼▼▼ -->
+      <section class="generator" data-page="page2">
+        <!-- 왼쪽: 입력 & 제목 추천 -->
+        <div class="panel">
+          <div class="panel-title" data-i18n="page2PanelTitle">
+            2페이지 · 시리즈용 감정 & 제목 추천 (1곡)
+          </div>
+          <p class="subtitle" data-i18n="page2Subtitle">
+            사랑/겨울/헬스 같은 시리즈용 테마를 정하고, 같은 조건에서 쓸 수 있는 제목 10개를 한 번에 뽑은 뒤
+            마음에 드는 제목을 골라 1곡 가사·프롬프트를 생성합니다.
+          </p>
+
+          <div class="field">
+            <label data-i18n="labelEmotion2">감정/상황 한 줄로 적기</label>
+            <textarea
+              class="user-text"
+              rows="3"
+              data-i18n-placeholder="placeholderEmotion2"
+              placeholder="예: 사랑, 겨울 연인 이야기, 헬스장에서 재도전하는 마음..."
+            ></textarea>
+          </div>
+
+          <div class="field">
+            <label data-i18n="labelStyle2">장르 / 스타일 선택</label>
+            <!-- 2페이지도 같은 스타일 셀렉터 재사용 -->
+            <select class="style-select">
+              <option disabled>── 메인 시장 (Main Market) ──</option>
+              <option value="futureBassBright">Future Bass (Bright) — 퓨처베이스 밝은 분위기</option>
+              <option value="futureBassFast">Future Bass (Fast) — 퓨처베이스 빠른 템포</option>
+              <option value="futureBassCozy">Future Bass (Cozy/Slow) — 퓨처베이스 느리고 감성적</option>
+              <option value="edmFestival">EDM Festival — 페스티벌 EDM</option>
+              <option value="edmMelodic">Melodic EDM — 멜로딕 EDM</option>
+              <option value="houseGroove">House Groove — 하우스 그루브</option>
+              <option value="deepHouseWarm">Deep House (Warm) — 따뜻한 딥하우스</option>
+              <option value="deepHouseChill">Deep House (Chill) — 차분한 딥하우스</option>
+              <option value="futureHouse">Future House — 퓨처 하우스</option>
+              <option value="chillEDM">Chill EDM — 칠 EDM</option>
+              <!-- 이하 나머지 옵션은 위와 동일하게 필요한 만큼 붙여도 되고, 간단히 둘 거면 여기까지만 둬도 됨 -->
+            </select>
+          </div>
+
+          <div class="field">
+            <label data-i18n="labelTheme2">시리즈 / 테마 선택</label>
+            <select class="theme-select">
+              <option value="auto" data-i18n="optThemeAuto">자동 (문장 기반)</option>
+              <option value="love" data-i18n="optThemeLove">사랑</option>
+              <option value="breakup" data-i18n="optThemeBreakup">이별</option>
+              <option value="winter" data-i18n="optThemeWinter">겨울</option>
+              <option value="workout" data-i18n="optThemeWorkout">헬스/운동</option>
+              <option value="work" data-i18n="optThemeWork">일하면서</option>
+              <option value="study" data-i18n="optThemeStudy">공부</option>
+              <option value="sleep" data-i18n="optThemeSleep">취침/수면</option>
+              <option value="christmas" data-i18n="optThemeChristmas">크리스마스</option>
+              <option value="seollal" data-i18n="optThemeSeollal">설날</option>
+              <option value="rain" data-i18n="optThemeRain">비/장마</option>
+              <option value="nightdrive" data-i18n="optThemeNightdrive">야간 드라이브</option>
+              <option value="cafe" data-i18n="optThemeCafe">카페</option>
+              <option value="travel" data-i18n="optThemeTravel">여행</option>
+              <option value="loneliness" data-i18n="optThemeLoneliness">외로움</option>
+              <option value="hope" data-i18n="optThemeHope">희망/재도전</option>
+              <option value="nostalgia" data-i18n="optThemeNostalgia">추억/회상</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label data-i18n="labelLength2">곡 길이 선택 (곡당)</label>
+            <select class="length-select">
+              <option value="2" data-i18n="optLength2">약 2분</option>
+              <option value="3" selected data-i18n="optLength3">약 3분</option>
+              <option value="4" data-i18n="optLength4">약 4분</option>
+            </select>
+          </div>
+
+          <!-- 2페이지: 제목 10개 + 리셋 -->
+          <div class="field">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <label data-i18n="labelTitleList">추천 제목 10개</label>
+              <button
+                type="button"
+                class="titles-reset-btn"
+                data-i18n="btnTitlesReset"
+              >
+                리셋
+              </button>
+            </div>
+            <button
+              type="button"
+              class="titles-generate-btn btn-primary"
+              data-i18n="btnTitlesGenerate"
+            >
+              제목 추천받기
+            </button>
+            <div class="titles-list"></div>
+          </div>
+
+          <!-- 선택한 제목 + 복사버튼 -->
+          <div class="field">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <label data-i18n="labelSelectedTitle">선택한 제목</label>
+              <button
+                type="button"
+                class="copy-btn"
+                data-copy-target="page2-selected-title"
+              >
+                복사하기
+              </button>
+            </div>
+            <input
+              type="text"
+              class="selected-title"
+              id="page2-selected-title"
+              readonly
+            />
+          </div>
+        </div>
+
+        <!-- 오른쪽: 단일곡 결과 -->
+        <div class="panel">
+          <div class="panel-title" data-i18n="page2ResultTitle">
+            2페이지 · 시리즈용 1곡 가사 & 프롬프트
+          </div>
+
+          <div class="field">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <label data-i18n="labelLyrics2">가사 (시리즈용 단일곡)</label>
+              <button type="button" class="copy-btn" data-copy-target="page2-lyrics">
+                복사하기
+              </button>
+            </div>
+            <textarea
+              class="lyrics-output"
+              id="page2-lyrics"
+              rows="12"
+              data-i18n-placeholder="placeholderLyrics2"
+              placeholder="선택한 제목에 맞춘 Verse1 → Pre-Chorus1 → Chorus1 → Verse2 → Pre-Chorus2 → Chorus2 → Bridge → Chorus3 구조의 가사가 생성됩니다."
+            ></textarea>
+          </div>
+
+          <div class="field">
+            <label data-i18n="labelLongPrompt2">긴 프롬프트 (1곡용)</label>
+            <textarea
+              class="long-prompt-output"
+              rows="6"
+              data-i18n-placeholder="placeholderLong2"
+              placeholder="시리즈용 테마에 맞춰, 이 곡 한 곡을 Suno/유튜브에서 쓸 수 있는 상세 프롬프트로 생성합니다."
+            ></textarea>
+          </div>
+
+          <div class="field">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <label data-i18n="labelShortPrompt2">짧은 프롬프트 (Suno용, 1곡)</label>
+              <button type="button" class="copy-btn" data-copy-target="page2-short">
+                복사하기
+              </button>
+            </div>
+            <textarea
+              class="short-prompt-output"
+              id="page2-short"
+              rows="3"
+              data-i18n-placeholder="placeholderShort2"
+              placeholder="위 긴 프롬프트를 압축한 Suno용 짧은 프롬프트입니다. (~2/3/4분 정보 포함)"
+            ></textarea>
+          </div>
+
+          <!-- 2페이지 Suno 버튼 -->
+          <div style="margin-top: 4px; display:flex; justify-content:flex-end;">
+            <a
+              href="https://app.suno.ai/create"
+              target="_blank"
+              class="suno-btn"
+            >
+              Suno로 이동해 이 제목으로 1곡 만들기 →
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>

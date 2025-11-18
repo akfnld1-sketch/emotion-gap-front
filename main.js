@@ -308,7 +308,7 @@ function applyUILanguage(lang) {
 // ------------------------------
 // 5. 언어 셀렉트 초기화
 // ------------------------------
-const API_URL = "http://localhost:3000/generate";
+const API_URL = "https://emotion-gap-server.vercel.app/generate";
 
 function initLanguageSelect() {
   const select = document.getElementById("languageSelect");
@@ -651,6 +651,9 @@ function initCopyButtons() {
 // ------------------------------
 // 14. 초기화
 // ------------------------------
+// ------------------------------
+// 14. 초기화
+// ------------------------------
 document.addEventListener("DOMContentLoaded", () => {
   initLanguageSelect();
   initTabs();
@@ -658,7 +661,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const page1 = getPageElements("page1");
   if (page1) {
     if (page1.titlesGenerateBtn) {
-      page1.titlesGenerateBtn.addEventListener(() =>
+      // ✅ 클릭 이벤트 이름 추가
+      page1.titlesGenerateBtn.addEventListener("click", () =>
         handleGenerateTitlesForPage("page1")
       );
     }
@@ -670,7 +674,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const page2 = getPageElements("page2");
   if (page2) {
     if (page2.titlesGenerateBtn) {
-      page2.titlesGenerateBtn.addEventListener(() =>
+      // ✅ 클릭 이벤트 이름 추가
+      page2.titlesGenerateBtn.addEventListener("click", () =>
         handleGenerateTitlesForPage("page2")
       );
     }
